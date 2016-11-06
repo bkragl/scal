@@ -45,6 +45,8 @@
         'src/benchmark/computational-load/computational-load.cc',
       ],
     },
+    
+    ### Benchmarks ###
     {
       'target_name': 'mm-harness',
       'type': 'executable',
@@ -85,6 +87,8 @@
         'src/benchmark/seqalt/seqalt.cc',
       ],
     },
+    
+    ### Producer-Consumer (prodcon) ###
     {
       'target_name': 'prodcon-ms',
       'type': 'executable',
@@ -306,16 +310,6 @@
     #  ],
     #},
     {
-      'target_name': 'seqalt-ll-dyn-dds-ms',
-      'type': 'executable',
-      'libraries': [ '<@(default_libraries)' ],
-      'dependencies': [
-        'libscal',
-        'seqalt-base',
-        'glue.gyp:ll-dyn-dds-ms',
-      ],
-    },
-    {
       'target_name': 'prodcon-ll-dyn-dds-treiber',
       'type': 'executable',
       'libraries': [ '<@(default_libraries)' ],
@@ -326,32 +320,12 @@
       ],
     },
     {
-      'target_name': 'seqalt-ll-dyn-dds-treiber',
-      'type': 'executable',
-      'libraries': [ '<@(default_libraries)' ],
-      'dependencies': [
-        'libscal',
-        'seqalt-base',
-        'glue.gyp:ll-dyn-dds-treiber',
-      ],
-    },
-    {
       'target_name': 'prodcon-lcrq',
       'type': 'executable',
       'libraries': [ '<@(default_libraries)' ],
       'dependencies': [
         'libscal',
         'prodcon-base',
-        'glue.gyp:lcrq',
-      ],
-    },
-    {
-      'target_name': 'seqalt-lcrq',
-      'type': 'executable',
-      'libraries': [ '<@(default_libraries)' ],
-      'dependencies': [
-        'libscal',
-        'seqalt-base',
         'glue.gyp:lcrq',
       ],
     },
@@ -575,6 +549,8 @@
         'glue.gyp:lru-dds-treiber-stack',
       ],
     },
+
+    ### Sequential Alternation (seqalt) ###
     {
       'target_name': 'seqalt-ms',
       'type': 'executable',
@@ -963,6 +939,36 @@
         'libscal',
         'seqalt-base',
         'glue.gyp:lru-dds-treiber-stack',
+      ],
+    },
+    {
+      'target_name': 'seqalt-ll-dyn-dds-ms',
+      'type': 'executable',
+      'libraries': [ '<@(default_libraries)' ],
+      'dependencies': [
+        'libscal',
+        'seqalt-base',
+        'glue.gyp:ll-dyn-dds-ms',
+      ],
+    },
+    {
+      'target_name': 'seqalt-ll-dyn-dds-treiber',
+      'type': 'executable',
+      'libraries': [ '<@(default_libraries)' ],
+      'dependencies': [
+        'libscal',
+        'seqalt-base',
+        'glue.gyp:ll-dyn-dds-treiber',
+      ],
+    },
+    {
+      'target_name': 'seqalt-lcrq',
+      'type': 'executable',
+      'libraries': [ '<@(default_libraries)' ],
+      'dependencies': [
+        'libscal',
+        'seqalt-base',
+        'glue.gyp:lcrq',
       ],
     }
   ]
