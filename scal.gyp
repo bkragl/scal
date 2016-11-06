@@ -667,7 +667,7 @@
       'libraries': [ '<@(default_libraries)' ],
       'dependencies': [
         'libscal',
-        'prodcon-base',
+        'seqalt-base',
         'glue.gyp:bs-kfifo',
       ],
     },
