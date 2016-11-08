@@ -87,6 +87,15 @@
         'src/benchmark/seqalt/seqalt.cc',
       ],
     },
+    {
+      'target_name': 'sssp-base',
+      'type': 'static_library',
+      'sources': [
+        'src/benchmark/common.cc',
+        'src/benchmark/sssp/graph.cc',
+        'src/benchmark/sssp/sssp.cc',
+      ],
+    },
     
     ### Producer-Consumer (prodcon) ###
     {
@@ -969,6 +978,18 @@
         'libscal',
         'seqalt-base',
         'glue.gyp:lcrq',
+      ],
+    },
+
+    ### Single source shortest path (sssp) ###
+    {
+      'target_name': 'sssp-ms',
+      'type': 'executable',
+      'libraries': [ '<@(default_libraries)' ],
+      'dependencies': [
+        'libscal',
+        'sssp-base',
+        'glue.gyp:ms',
       ],
     }
   ]
