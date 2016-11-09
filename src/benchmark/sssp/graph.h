@@ -6,9 +6,7 @@
 #define SCAL_BENCHMARK_BFS_GRAPH_H
 
 #include <inttypes.h>
-
 #include <limits>
-#include <vector>
 
 struct Node {
 public:
@@ -29,6 +27,8 @@ public:
   //static Graph* from_graph_file(const char* graph_file);
   //static Graph* from_mtx_file(const char* graph_file);
   static Graph from_spraylist_benchmarks(const char* graph_file);
+
+  void print_distances (const char* weights_file);
   
   uint64_t num_nodes;
   Node *nodes;

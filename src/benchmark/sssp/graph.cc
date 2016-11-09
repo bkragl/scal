@@ -4,13 +4,8 @@
 
 #include "benchmark/sssp/graph.h"
 
-#include <algorithm>
-#include <cstddef>
-#include <cstdlib>
-#include <string>
-#include <vector>
-
-#include "util/malloc.h"
+#include <iostream>
+#include <fstream>
 
 Graph Graph::from_spraylist_benchmarks(const char* graph_file) {
   Graph g;
@@ -49,6 +44,7 @@ Graph Graph::from_spraylist_benchmarks(const char* graph_file) {
     idx[i] = 0;
   }
 
+  srand(123);
   while (fscanf(fp, "%" PRIu64 " %" PRIu64 "\n", &u, &v) == 2) {
     g.nodes[u].neighbors[idx[u]] = v;
     g.nodes[u].weights[idx[u]] = rand() % 100;
@@ -56,4 +52,13 @@ Graph Graph::from_spraylist_benchmarks(const char* graph_file) {
   }
   
   return g;
+}
+
+void Graph::print_distances (const char* distance_file) {
+  std::ofstream f;
+  f.open (distance_file);
+  for (uint64_t i = 0; i < num_nodes; ++i) {
+    f << nodes[i].distance << std::endl;
+  }
+  f.close();
 }

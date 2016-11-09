@@ -12,6 +12,7 @@
 #include <time.h>
 
 #include <iostream>
+#include <fstream>
 
 #include "benchmark/common.h"
 #include "benchmark/std_glue/std_pipe_api.h"
@@ -35,8 +36,14 @@ DEFINE_bool  (log_operations, false,
               "log invocation/response/linearization of all operations");
 DEFINE_bool  (allow_empty_returns, false,
               "does not stop the execution at an empty-dequeue");
-DEFINE_string(input_file, "",
+DEFINE_string(graph_file, "",
               "input graph file");
+DEFINE_string(distance_file, "",
+              "write computed distances to file if specified");
+DEFINE_string(summary_file, "",
+              "write execution summary to file if specified");
+DEFINE_string(tag, "sssp",
+              "tag printed in summary (e.g., to identify used data structure");
 
 class SsspBench : public scal::Benchmark {
 public:
@@ -48,6 +55,8 @@ public:
                 thread_prealloc_size,
                 data),  graph(graph){
   }
+
+  void print_summary(std::ostream& out);
 protected:
   Graph graph;
   void bench_func(void);
@@ -69,27 +78,41 @@ int main(int argc, const char **argv) {
   scal::ThreadContext::prepare(num_threads + 1);
   scal::ThreadContext::assign_context();
 
-  Graph graph = Graph::from_spraylist_benchmarks(FLAGS_input_file.c_str());
+  Graph graph = Graph::from_spraylist_benchmarks(FLAGS_graph_file.c_str());
   
   void *ds = ds_new();
 
-  SsspBench *benchmark = new SsspBench(
+  SsspBench benchmark(
     num_threads,
     tlsize,
     ds,
     graph);
-  benchmark->run();
+  benchmark.run();
 
-  if (FLAGS_print_summary) {
-    uint64_t exec_time = benchmark->execution_time();
-    printf("%s\t%s\t%" PRIu64 "\t%" PRIu64 "\n",
-           argv[0],
-           FLAGS_input_file.c_str(),
-           num_threads,
-           exec_time);
-    // char *ds_stats = ds_get_stats();
+  if (!FLAGS_distance_file.empty()) {
+    std::cout << "writing distances ..." << std::endl;
+    graph.print_distances(FLAGS_distance_file.c_str());
   }
+  
+  if (FLAGS_print_summary) {
+    benchmark.print_summary(std::cout);
+  }
+  if (!FLAGS_summary_file.empty()) {
+    std::cout << "writing summary ..." << std::endl;
+    std::ofstream f(FLAGS_summary_file);
+    benchmark.print_summary(f);
+    f.close();
+  }
+  
   return EXIT_SUCCESS;
+}
+
+void SsspBench::print_summary (std::ostream& out) {
+  out << FLAGS_tag << "\t"
+      << FLAGS_graph_file << "\t"
+      << num_threads()    << "\t"
+      << execution_time() << "\t"
+      << std::endl;
 }
 
 void SsspBench::bench_func(void) {
