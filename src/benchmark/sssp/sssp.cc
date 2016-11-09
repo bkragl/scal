@@ -50,7 +50,7 @@ public:
   SsspBench(uint64_t num_threads,
             uint64_t thread_prealloc_size,
             void *data,
-            Graph graph)
+            Graph* graph)
     : Benchmark(num_threads,
                 thread_prealloc_size,
                 data),  graph(graph){
@@ -58,7 +58,7 @@ public:
 
   void print_summary(std::ostream& out);
 protected:
-  Graph graph;
+  Graph* graph;
   void bench_func(void);
 };
 
@@ -78,7 +78,7 @@ int main(int argc, const char **argv) {
   scal::ThreadContext::prepare(num_threads + 1);
   scal::ThreadContext::assign_context();
 
-  Graph graph = Graph::from_spraylist_benchmarks(FLAGS_graph_file.c_str());
+  Graph* graph = Graph::from_spraylist_benchmarks(FLAGS_graph_file.c_str());
   
   void *ds = ds_new();
 
@@ -91,7 +91,7 @@ int main(int argc, const char **argv) {
 
   if (!FLAGS_distance_file.empty()) {
     std::cout << "writing distances ..." << std::endl;
-    graph.print_distances(FLAGS_distance_file.c_str());
+    graph->print_distances(FLAGS_distance_file.c_str());
   }
   
   if (FLAGS_print_summary) {
@@ -124,7 +124,7 @@ void SsspBench::bench_func(void) {
 
   uint64_t fail = 0;
 
-  graph.nodes[src].distance = 0;
+  graph->nodes[src].distance = 0;
 
   ds->put(src);
 
@@ -140,19 +140,19 @@ void SsspBench::bench_func(void) {
     
     fail = 0;
     
-    //if (node_distance != graph.nodes[node].distance) continue; // dead node
-    node_distance = graph.nodes[node].distance;
-    graph.nodes[node].times_processed++;
+    //if (node_distance != graph->nodes[node].distance) continue; // dead node
+    node_distance = graph->nodes[node].distance;
+    graph->nodes[node].times_processed++;
 
-    for (uint64_t i = 0; i < graph.nodes[node].num_neighbors; i++) {
-      uint64_t neighbor = graph.nodes[node].neighbors[i];
-      uint64_t weight   = graph.nodes[node].weights[i];
+    for (uint64_t i = 0; i < graph->nodes[node].num_neighbors; i++) {
+      uint64_t neighbor = graph->nodes[node].neighbors[i];
+      uint64_t weight   = graph->nodes[node].weights[i];
 
-      uint64_t neighbor_distance = graph.nodes[neighbor].distance;
+      uint64_t neighbor_distance = graph->nodes[neighbor].distance;
       uint64_t new_neighbor_distance = node_distance + weight;
 
       if (new_neighbor_distance < neighbor_distance) { // found better path to v
-        bool cas = __sync_bool_compare_and_swap(&graph.nodes[neighbor].distance,
+        bool cas = __sync_bool_compare_and_swap(&graph->nodes[neighbor].distance,
                                                 neighbor_distance,
                                                 new_neighbor_distance);
         if (cas) {

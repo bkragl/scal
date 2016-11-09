@@ -6,48 +6,55 @@
 
 #include <iostream>
 #include <fstream>
+#include <vector>
 
-Graph Graph::from_spraylist_benchmarks(const char* graph_file) {
-  Graph g;
+Graph* Graph::from_spraylist_benchmarks(const char* graph_file) {
+  Graph* g = new Graph();
 
   uint64_t num_edges;
 
   FILE* fp = fopen(graph_file, "r");
-  fscanf(fp, "# Nodes: %" PRIu64 " Edges: %" PRIu64 "\n", &g.num_nodes, &num_edges);
+  fscanf(fp, "# Nodes: %" PRIu64 " Edges: %" PRIu64 "\n", &g->num_nodes, &num_edges);
 
-  g.nodes = new Node[g.num_nodes];
+  g->nodes = new Node[g->num_nodes];
   
-  for (uint64_t i = 0; i < g.num_nodes; i++) {
-    g.nodes[i].num_neighbors = 0;
-    g.nodes[i].distance = Node::no_distance;
-    //g.nodes[i].times_processed = 0;
+  for (uint64_t i = 0; i < g->num_nodes; i++) {
+    g->nodes[i].num_neighbors = 0;
+    g->nodes[i].distance = Node::no_distance;
+    //g->nodes[i].times_processed = 0;
   }
 
   uint64_t u,v;
   while (fscanf(fp, "%" PRIu64 " %" PRIu64 "\n", &u, &v) == 2) {
-    g.nodes[u].num_neighbors++;
+    if (u >= g->num_nodes) continue;
+    if (v >= g->num_nodes) continue;
+    g->nodes[u].num_neighbors++;
   }
 
   fclose(fp);
   
-  for (uint64_t i = 0; i < g.num_nodes; i++) {
-    g.nodes[i].neighbors = new uint64_t[g.nodes[i].num_neighbors];
-    g.nodes[i].weights   = new uint64_t[g.nodes[i].num_neighbors];
+  for (uint64_t i = 0; i < g->num_nodes; i++) {
+    uint64_t num_neighbors = g->nodes[i].num_neighbors;
+    if (num_neighbors > 0) {
+      g->nodes[i].neighbors = new uint64_t[num_neighbors];
+      g->nodes[i].weights   = new uint64_t[num_neighbors];
+    }
   }
-   
-  fp = fopen(graph_file, "r");
-  uint64_t  tmp;
-  fscanf(fp, "# Nodes: %" PRIu64 " Edges: %" PRIu64 "\n", &tmp, &num_edges);
 
-  uint64_t  idx[g.num_nodes];
-  for (uint64_t i = 0; i < g.num_nodes; i++) {
-    idx[i] = 0;
+  fp = fopen(graph_file, "r");
+  {
+    uint64_t  tmp;
+    fscanf(fp, "# Nodes: %" PRIu64 " Edges: %" PRIu64 "\n", &tmp, &num_edges);
   }
+
+  std::vector<uint64_t> idx(g->num_nodes, 0);
 
   srand(123);
   while (fscanf(fp, "%" PRIu64 " %" PRIu64 "\n", &u, &v) == 2) {
-    g.nodes[u].neighbors[idx[u]] = v;
-    g.nodes[u].weights[idx[u]] = rand() % 100;
+    if (u >= g->num_nodes) continue;
+    if (v >= g->num_nodes) continue;
+    g->nodes[u].neighbors[idx[u]] = v;
+    g->nodes[u].weights  [idx[u]] = rand() % 100;
     idx[u]++;
   }
   
