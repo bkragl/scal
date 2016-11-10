@@ -84,6 +84,8 @@ int main(int argc, const char **argv) {
 
   if (FLAGS_graph_format == "dimacs") {
     graph = Graph::from_dimacs(FLAGS_graph_file.c_str());
+  } else if (FLAGS_graph_format == "simple") {
+    graph = Graph::from_simple(FLAGS_graph_file.c_str());
   } else if (FLAGS_graph_format == "spray") {
     graph = Graph::from_spraylist_benchmarks(FLAGS_graph_file.c_str());
   } else {

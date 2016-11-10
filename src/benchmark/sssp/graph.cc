@@ -138,6 +138,54 @@ Graph* Graph::from_dimacs (const char* graph_file) {
   return g;
 }
 
+Graph* Graph::from_simple (const char* graph_file) {
+  Graph* g = new Graph();
+  uint64_t num_edges;
+
+  uint64_t u, v, w;
+
+  // Read number of total nodes and edges, as well as number of neighbors for
+  // every node.
+  {
+    std::ifstream infile(graph_file);
+
+    infile >> g->num_nodes >> num_edges;
+    g->nodes = new Node[g->num_nodes];
+
+    for (uint64_t i = 0; i < num_edges; ++i) {
+      infile >> u >> v >> w;
+      assert(0 < u && u <= g->num_nodes);
+      assert(0 < v && v <= g->num_nodes);
+      g->nodes[u-1].num_neighbors++;
+    }
+  }
+
+  // Allocate neighbors and weights array for every node.
+  for (uint64_t i = 0; i < g->num_nodes; i++) {
+    uint64_t num_neighbors = g->nodes[i].num_neighbors;
+    if (num_neighbors > 0) {
+      g->nodes[i].neighbors = new uint64_t[num_neighbors];
+      g->nodes[i].weights   = new uint64_t[num_neighbors];
+    }
+  }
+
+  // Read edges.
+  {
+    std::vector<uint64_t> idx(g->num_nodes, 0);
+    std::ifstream infile(graph_file);
+
+    infile >> g->num_nodes >> num_edges;
+    for (uint64_t i = 0; i < num_edges; ++i) {
+      infile >> u >> v >> w;
+      g->nodes[u-1].neighbors[idx[u-1]] = v;
+      g->nodes[u-1].weights  [idx[u-1]] = w;
+      idx[u]++;
+    }
+  }
+
+  return g;
+}
+
 void Graph::print_distances (const char* distance_file) {
   std::ofstream f;
   f.open (distance_file);

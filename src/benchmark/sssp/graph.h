@@ -31,6 +31,7 @@ public:
   //static Graph* from_mtx_file (const char* graph_file);
   static Graph* from_spraylist_benchmarks (const char* graph_file);
   static Graph* from_dimacs (const char* graph_file);
+  static Graph* from_simple (const char* graph_file);
 
   void print_distances (const char* weights_file);
   
