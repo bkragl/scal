@@ -132,7 +132,7 @@ void SsspBench::bench_func(void) {
   Pool<uint64_t> *ds = static_cast<Pool<uint64_t>*>(data_);
 //  uint64_t thread_id = scal::ThreadContext::get().thread_id();
   uint64_t src = 0;
-  uint64_t node;
+  uint64_t node_idx;
   uint64_t node_distance;
 
   uint64_t fail = 0;
@@ -142,8 +142,8 @@ void SsspBench::bench_func(void) {
   ds->put(src);
 
   while (1) {
-    //if (!ds->get(&node_distance, &node)) { // list is empty; TODO make sure threads don't quit early
-    if (!ds->get(&node)) { // list is empty; TODO make sure threads don't quit early
+    //if (!ds->get(&node_distance, &node_idx)) { // list is empty; TODO make sure threads don't quit early
+    if (!ds->get(&node_idx)) { // list is empty; TODO make sure threads don't quit early
       fail++;
       if (fail > 20 * num_threads()) { // TODO: really need a better break condition...
         break;
@@ -152,24 +152,26 @@ void SsspBench::bench_func(void) {
     }
     
     fail = 0;
-    
-    //if (node_distance != graph->nodes[node].distance) continue; // dead node
-    node_distance = graph->nodes[node].distance;
-    graph->nodes[node].times_processed++;
 
-    for (uint64_t i = 0; i < graph->nodes[node].num_neighbors; i++) {
-      uint64_t neighbor = graph->nodes[node].neighbors[i];
-      uint64_t weight   = graph->nodes[node].weights[i];
+    Node& node = graph->nodes[node_idx];
+    //if (node_distance != node.distance) continue; // dead node
+    node_distance = node.distance;
+    node.times_processed++;
 
-      uint64_t neighbor_distance = graph->nodes[neighbor].distance;
+    for (uint64_t i = 0; i < node.num_neighbors; i++) {
+      uint64_t neighbor_idx = node.neighbors[i];
+      uint64_t weight       = node.weights[i];
+
+      Node& neighbor = graph->nodes[neighbor_idx];
+      uint64_t neighbor_distance = neighbor.distance;
       uint64_t new_neighbor_distance = node_distance + weight;
 
       if (new_neighbor_distance < neighbor_distance) { // found better path to v
-        bool cas = __sync_bool_compare_and_swap(&graph->nodes[neighbor].distance,
+        bool cas = __sync_bool_compare_and_swap(&neighbor.distance,
                                                 neighbor_distance,
                                                 new_neighbor_distance);
         if (cas) {
-          ds->put(node);
+          ds->put(neighbor_idx);
           //sl_add_val(d->set, dist_node+w, v, TRANSACTIONAL); // add to queue only if CAS is successful
         } else {
           i--; // retry
