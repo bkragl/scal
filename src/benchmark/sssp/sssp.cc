@@ -82,6 +82,7 @@ int main(int argc, const char **argv) {
 
   Graph* graph;
 
+  std::cout << "reading graph ..." << std::endl;
   if (FLAGS_graph_format == "dimacs") {
     graph = Graph::from_dimacs(FLAGS_graph_file.c_str());
   } else if (FLAGS_graph_format == "simple") {
@@ -92,6 +93,7 @@ int main(int argc, const char **argv) {
     std::cerr << "Unknown graph format" << std::endl;
     abort();
   }
+  std::cout << "done" << std::endl;
 
   void *ds = ds_new();
 
@@ -102,19 +104,18 @@ int main(int argc, const char **argv) {
     graph);
   benchmark.run();
 
-  if (!FLAGS_distance_file.empty()) {
-    std::cout << "writing distances ..." << std::endl;
-    graph->print_distances(FLAGS_distance_file.c_str());
-  }
-  
   if (FLAGS_print_summary) {
     benchmark.print_summary(std::cout);
   }
   if (!FLAGS_summary_file.empty()) {
-    std::cout << "writing summary ..." << std::endl;
     std::ofstream f(FLAGS_summary_file);
     benchmark.print_summary(f);
     f.close();
+  }
+
+  if (!FLAGS_distance_file.empty()) {
+    std::cout << "writing distances ..." << std::endl;
+    graph->print_distances(FLAGS_distance_file.c_str());
   }
   
   return EXIT_SUCCESS;
