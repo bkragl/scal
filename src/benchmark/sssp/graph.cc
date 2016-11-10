@@ -128,9 +128,9 @@ Graph* Graph::from_dimacs (const char* graph_file) {
       iss >> c;
       if (c == 'a') {
         iss >> u >> v >> w;
-        g->nodes[u-1].neighbors[idx[u-1]] = v;
+        g->nodes[u-1].neighbors[idx[u-1]] = v-1;
         g->nodes[u-1].weights  [idx[u-1]] = w;
-        idx[u]++;
+        idx[u-1]++;
       }
     }
   }
@@ -177,9 +177,9 @@ Graph* Graph::from_simple (const char* graph_file) {
     infile >> g->num_nodes >> num_edges;
     for (uint64_t i = 0; i < num_edges; ++i) {
       infile >> u >> v >> w;
-      g->nodes[u-1].neighbors[idx[u-1]] = v;
+      g->nodes[u-1].neighbors[idx[u-1]] = v-1;
       g->nodes[u-1].weights  [idx[u-1]] = w;
-      idx[u]++;
+      idx[u-1]++;
     }
   }
 
