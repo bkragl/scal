@@ -36,6 +36,8 @@ DEFINE_bool  (log_operations, false,
               "log invocation/response/linearization of all operations");
 DEFINE_bool  (allow_empty_returns, false,
               "does not stop the execution at an empty-dequeue");
+DEFINE_string(graph_format, "dimacs",
+              "input graph format (dimacs/spray)");
 DEFINE_string(graph_file, "",
               "input graph file");
 DEFINE_string(distance_file, "",
@@ -78,8 +80,17 @@ int main(int argc, const char **argv) {
   scal::ThreadContext::prepare(num_threads + 1);
   scal::ThreadContext::assign_context();
 
-  Graph* graph = Graph::from_spraylist_benchmarks(FLAGS_graph_file.c_str());
-  
+  Graph* graph;
+
+  if (FLAGS_graph_format == "dimacs") {
+    graph = Graph::from_dimacs(FLAGS_graph_file.c_str());
+  } else if (FLAGS_graph_format == "spray") {
+    graph = Graph::from_spraylist_benchmarks(FLAGS_graph_file.c_str());
+  } else {
+    std::cerr << "Unknown graph format" << std::endl;
+    abort();
+  }
+
   void *ds = ds_new();
 
   SsspBench benchmark(

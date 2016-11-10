@@ -4,8 +4,12 @@
 
 #include "benchmark/sssp/graph.h"
 
+#include <cassert>
+
 #include <iostream>
 #include <fstream>
+#include <sstream>
+#include <string>
 #include <vector>
 
 Graph* Graph::from_spraylist_benchmarks(const char* graph_file) {
@@ -58,6 +62,79 @@ Graph* Graph::from_spraylist_benchmarks(const char* graph_file) {
     idx[u]++;
   }
   
+  return g;
+}
+
+Graph* Graph::from_dimacs (const char* graph_file) {
+  Graph* g = new Graph();
+  uint64_t num_edges;
+
+  std::istringstream iss;
+  std::string line;
+  char c;
+  uint64_t u, v, w;
+
+  // Read number of total nodes and edges, as well as number of neighbors for
+  // every node.
+  {
+    std::ifstream infile(graph_file);
+    std::string tmp;
+
+    while (std::getline(infile, line) && line[0] == 'c') {}
+
+    assert(line[0] == 'p');
+
+    iss.str(line);
+    iss.clear();
+    iss >> c >> tmp >> g->num_nodes >> num_edges;
+    assert(c == 'p' && tmp == "sp");
+
+    g->nodes = new Node[g->num_nodes];
+
+    while (std::getline(infile, line)) {
+      iss.str(line);
+      iss.clear();
+      iss >> c;
+
+      if (c == 'a') {
+        iss >> u >> v;
+        assert(0 < u && u <= g->num_nodes);
+        assert(0 < v && v <= g->num_nodes);
+        g->nodes[u-1].num_neighbors++;
+        num_edges--;
+      }
+    }
+
+    assert (num_edges == 0);
+  }
+
+  // Allocate neighbors and weights array for every node.
+  for (uint64_t i = 0; i < g->num_nodes; i++) {
+    uint64_t num_neighbors = g->nodes[i].num_neighbors;
+    if (num_neighbors > 0) {
+      g->nodes[i].neighbors = new uint64_t[num_neighbors];
+      g->nodes[i].weights   = new uint64_t[num_neighbors];
+    }
+  }
+
+  // Read edges.
+  {
+    std::vector<uint64_t> idx(g->num_nodes, 0);
+    std::ifstream infile(graph_file);
+
+    while (std::getline(infile, line)) {
+      iss.str(line);
+      iss.clear();
+      iss >> c;
+      if (c == 'a') {
+        iss >> u >> v >> w;
+        g->nodes[u-1].neighbors[idx[u-1]] = v;
+        g->nodes[u-1].weights  [idx[u-1]] = w;
+        idx[u]++;
+      }
+    }
+  }
+
   return g;
 }
 

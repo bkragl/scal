@@ -20,6 +20,9 @@ public:
   uint64_t distance;
   //uint64_t parent;
   uint64_t times_processed;
+
+  Node () : num_neighbors(0), neighbors(0), weights(0),
+            distance(no_distance), times_processed(0) {}
 };
 
 struct Graph {
@@ -27,6 +30,7 @@ public:
   //static Graph* from_graph_file (const char* graph_file);
   //static Graph* from_mtx_file (const char* graph_file);
   static Graph* from_spraylist_benchmarks (const char* graph_file);
+  static Graph* from_dimacs (const char* graph_file);
 
   void print_distances (const char* weights_file);
   
