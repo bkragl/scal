@@ -4,7 +4,7 @@
 Scal is an open-source benchmarking framework that provides (1) software infrastructure for executing concurrent data structure algorithms, (2) workloads for benchmarking their performance and scalability, and (3) implementations of a large set of concurrent data structures.
 
 Homepage: http://scal.cs.uni-salzburg.at <br>
-Paper: [Scal: A Benchmarking Suite for Concurrent Data Structures](./paper.pdf)
+Paper: [Scal: A Benchmarking Suite for Concurrent Data Structures](./doc/paper.pdf)
 
 
 ## Data structures
@@ -57,11 +57,12 @@ converted.
 This is as easy as
 
     tools/make_deps.sh
-    build/gyp/gyp --depth=. scal.gyp
+    tools/make_make.sh
+    cd build
     V=1 BUILDTYPE=Debug make
     V=1 BUILDTYPE=Release make
 
-The debug and release builds reside in `out/`.
+The debug and release builds reside in `build/out/`.
 
 Additional data files, such as graph files, are available as submodule
 

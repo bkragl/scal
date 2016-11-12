@@ -1,10 +1,14 @@
-*.pyc
-*.o
-
+# GYP-generated and compiled files
 build/
 
-# others
+# Doxygen-generated files
+doc/html
+
+# Python bytecode
+*.pyc
+
+# Others
 .DS_Store
 
-# xcode
+# Xcode
 *.xcodeproj
