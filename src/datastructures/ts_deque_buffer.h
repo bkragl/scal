@@ -400,7 +400,7 @@ class TSDequeBuffer {
       uint64_t start_time[2];
       timestamping_->read_time(start_time);
       // We start iterating over the thread-local lists at a random index.
-      uint64_t start = hwrand();
+      uint64_t start = scal::hwrand();
       // We iterate over all thead-local buffers
       for (uint64_t i = 0; i < num_threads_; i++) {
 
@@ -530,7 +530,7 @@ class TSDequeBuffer {
       uint64_t start_time[2];
       timestamping_->read_time(start_time);
       // We start iterating over the thread-local lists at a random index.
-      uint64_t start = hwrand();
+      uint64_t start = scal::hwrand();
       // We iterate over all thead-local buffers
       for (uint64_t i = 0; i < num_threads_; i++) {
 

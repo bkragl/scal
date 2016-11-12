@@ -203,7 +203,7 @@ class RTSQueue : Queue<T>{
       Item* old_remove = NULL;
 
       // We start iterating of the thread-local lists at a random index.
-      uint64_t start = hwrand();
+      uint64_t start = scal::hwrand();
       // We iterate over all thead-local buffers
       uint64_t num_buffers = num_threads_;
       for (uint64_t i = 0; i < num_buffers; i++) {

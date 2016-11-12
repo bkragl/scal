@@ -295,7 +295,7 @@ class TSQueueBuffer {
 //       uint64_t num_buffers = num_threads_;
  
       // We start iterating over the thread-local lists at a random index.
-      uint64_t start = hwrand() % num_threads_;
+      uint64_t start = scal::hwrand() % num_threads_;
       SPBuffer* current_buffer;
       SPBuffer* youngest_buffer;
       current_buffer = entry_buffer_.load();

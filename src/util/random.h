@@ -10,17 +10,9 @@
 #include <chrono>
 #include <random>
 
+#include "util/platform.h"
+
 namespace scal {
-
-namespace detail {
-
-inline uint64_t rdtsc() {
-  unsigned int hi, lo;
-  __asm__ __volatile__("rdtsc" : "=a"(lo), "=d"(hi));
-  return ((uint64_t) lo) | (((uint64_t) hi) << 32);
-}
-
-}  // namespace detail
 
 const uint32_t kRandMax = 2147483647;
 
@@ -30,7 +22,7 @@ void srand(uint32_t seed);
 
 
 inline uint64_t hwrand() {
-  return (detail::rdtsc() >> 6);
+  return (Rdtsc() >> 6);
 }
 
 
@@ -53,13 +45,5 @@ void shuffle(T* items, size_t len, uint64_t seed = 0) {
 }
 
 }  // namespace scal
-
-//
-// Legacy
-//
-
-inline uint64_t hwrand() { return scal::hwrand(); }
-
-inline uint64_t pseudorand() { return scal::pseudorand(); }
 
 #endif  // SCAL_UTIL_RANDOM_H_

@@ -40,7 +40,7 @@ class TSDeque : public Pool<T> {
     bool put(T element) {
       // Randomly insert an element either at the left or the right side
       // of the deque.
-      if ((hwrand() % 2) == 0) {
+      if ((scal::hwrand() % 2) == 0) {
         return insert_left(element);
       }
       return insert_right(element);
@@ -49,7 +49,7 @@ class TSDeque : public Pool<T> {
     bool get(T *element) {
       // Randomly remove an element either at the left or the right side
       // of the deque.
-      if ((hwrand() % 2) == 0) {
+      if ((scal::hwrand() % 2) == 0) {
         return remove_left(element);
       }
       return remove_right(element);
