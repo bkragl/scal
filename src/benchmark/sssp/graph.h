@@ -8,18 +8,20 @@
 #include <inttypes.h>
 #include <limits>
 
+typedef uint32_t graphint_t;
+
 struct Node {
 public:
-  static const uint64_t no_distance = std::numeric_limits<uint64_t>::max();
-  //static const uint64_t no_parent = std::numeric_limits<uint64_t>::max();
+  static const graphint_t no_distance = std::numeric_limits<graphint_t>::max();
+  //static const graphint_t no_parent = std::numeric_limits<graphint_t>::max();
 
-  uint64_t num_neighbors;
-  uint64_t *neighbors;
-  uint64_t *weights;
+  graphint_t num_neighbors;
+  graphint_t *neighbors;
+  graphint_t *weights;
 
-  uint64_t distance;
-  //uint64_t parent;
-  uint64_t times_processed;
+  graphint_t distance;
+  //graphint_t parent;
+  graphint_t times_processed;
 
   Node () : num_neighbors(0), neighbors(0), weights(0),
             distance(no_distance), times_processed(0) {}
@@ -35,7 +37,7 @@ public:
 
   void print_distances (const char* weights_file);
   
-  uint64_t num_nodes;
+  graphint_t num_nodes;
   Node *nodes;
 
 private:

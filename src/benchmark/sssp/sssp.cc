@@ -11,6 +11,7 @@
 #include <string.h>
 #include <time.h>
 
+#include <atomic>
 #include <iostream>
 #include <fstream>
 
@@ -37,7 +38,7 @@ DEFINE_bool  (log_operations, false,
 DEFINE_bool  (allow_empty_returns, false,
               "does not stop the execution at an empty-dequeue");
 DEFINE_string(graph_format, "dimacs",
-              "input graph format (dimacs/spray)");
+              "input graph format");
 DEFINE_string(graph_file, "",
               "input graph file");
 DEFINE_string(distance_file, "",
@@ -55,12 +56,13 @@ public:
             Graph* graph)
     : Benchmark(num_threads,
                 thread_prealloc_size,
-                data),  graph(graph){
-  }
+                data),
+      graph(graph), idle_threads(0) {}
 
   void print_summary(std::ostream& out);
 protected:
   Graph* graph;
+  std::atomic<uint64_t> idle_threads;
   void bench_func(void);
 };
 
@@ -87,8 +89,6 @@ int main(int argc, const char **argv) {
     graph = Graph::from_dimacs(FLAGS_graph_file.c_str());
   } else if (FLAGS_graph_format == "simple") {
     graph = Graph::from_simple(FLAGS_graph_file.c_str());
-  } else if (FLAGS_graph_format == "spray") {
-    graph = Graph::from_spraylist_benchmarks(FLAGS_graph_file.c_str());
   } else {
     std::cerr << "Unknown graph format" << std::endl;
     abort();
@@ -129,55 +129,82 @@ void SsspBench::print_summary (std::ostream& out) {
       << std::endl;
 }
 
-void SsspBench::bench_func(void) {
-  Pool<uint64_t> *ds = static_cast<Pool<uint64_t>*>(data_);
-//  uint64_t thread_id = scal::ThreadContext::get().thread_id();
-  uint64_t src = 0;
-  uint64_t node_idx;
-  uint64_t node_distance;
+inline uint64_t pack (uint32_t a, uint32_t b) {
+  return ((uint64_t)a) << 32 | b;
+}
 
-  uint64_t fail = 0;
+inline void unpack (const uint64_t& v, uint32_t& a, uint32_t& b) {
+  a = (uint32_t)((v & 0xFFFFFFFF00000000LL) >> 32);
+  b = (uint32_t)(v & 0xFFFFFFFFLL);
+}
+
+void SsspBench::bench_func(void) {
+  uint64_t thread_id = scal::ThreadContext::get().thread_id();
+  
+  Pool<uint64_t> *ds = static_cast<Pool<uint64_t>*>(data_);
+  uint64_t element;
+  
+  graphint_t src = 0;
+
+  graphint_t node_idx;
+  graphint_t node_distance;
+
+  uint64_t idle_threads_read;
+  uint64_t fail_cnt = 0;
+  uint64_t nodes_processed = 0;
 
   graph->nodes[src].distance = 0;
-
-  ds->put(src);
+  ds->put(pack(0, src));
 
   while (1) {
-    //if (!ds->get(&node_distance, &node_idx)) { // list is empty; TODO make sure threads don't quit early
-    if (!ds->get(&node_idx)) { // list is empty; TODO make sure threads don't quit early
-      fail++;
-      if (fail > 20 * num_threads()) { // TODO: really need a better break condition...
-        break;
+    if (!ds->get(&element)) {
+      // Keep threads alive until there is really no work left (i.e., every
+      // thread failed to extract a node).
+      idle_threads++;
+      fail_cnt++;
+      while ((idle_threads_read = idle_threads.load()) < num_threads() &&
+             !ds->get(&element)) {
+        fail_cnt++;
       }
-      continue;
+      if (idle_threads_read == num_threads()) break;
+      idle_threads--;
     }
-    
-    fail = 0;
+
+    nodes_processed++;
+    unpack(element, node_distance, node_idx);
 
     Node& node = graph->nodes[node_idx];
-    //if (node_distance != node.distance) continue; // dead node
-    node_distance = node.distance;
-    node.times_processed++;
+    if (node_distance != node.distance) continue; // dead node
+    // node.times_processed++;
 
-    for (uint64_t i = 0; i < node.num_neighbors; i++) {
-      uint64_t neighbor_idx = node.neighbors[i];
-      uint64_t weight       = node.weights[i];
+    for (graphint_t i = 0; i < node.num_neighbors; i++) {
+      graphint_t neighbor_idx = node.neighbors[i];
+      graphint_t weight       = node.weights[i];
 
       Node& neighbor = graph->nodes[neighbor_idx];
-      uint64_t neighbor_distance = neighbor.distance;
-      uint64_t new_neighbor_distance = node_distance + weight;
+      graphint_t neighbor_distance = neighbor.distance;
+      graphint_t new_neighbor_distance = node_distance + weight;
 
-      if (new_neighbor_distance < neighbor_distance) { // found better path to v
-        bool cas = __sync_bool_compare_and_swap(&neighbor.distance,
-                                                neighbor_distance,
-                                                new_neighbor_distance);
-        if (cas) {
-          ds->put(neighbor_idx);
-          //sl_add_val(d->set, dist_node+w, v, TRANSACTIONAL); // add to queue only if CAS is successful
+      while (new_neighbor_distance < neighbor_distance) {
+        // Found better path to neighbor.
+        graphint_t cas_distance = __sync_val_compare_and_swap(&neighbor.distance,
+                                                              neighbor_distance,
+                                                              new_neighbor_distance);
+        if (cas_distance == neighbor_distance) {
+          // We were successful in writing our distance and are done.
+          ds->put(pack(new_neighbor_distance, neighbor_idx));
+          break;
         } else {
-          i--; // retry
+          // Somebody else wrote to neighbor_distance before us. If it is worse
+          // than our distance we'll try writing again.
+          neighbor_distance = cas_distance;
         }
       } 
     }
   }
+
+  std::cout << "thread " << thread_id << ": "
+            << fail_cnt << " fail / "
+            << nodes_processed << " processed"
+            << std::endl;
 }
