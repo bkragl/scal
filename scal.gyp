@@ -991,6 +991,416 @@
         'sssp-base',
         'glue.gyp:ms',
       ],
+    },
+    {
+      'target_name': 'sssp-treiber',
+      'type': 'executable',
+      'libraries': [ '<@(default_libraries)' ],
+      'dependencies': [
+        'libscal',
+        'sssp-base',
+        'glue.gyp:treiber',
+      ],
+    },
+    {
+      'target_name': 'sssp-dds-partrr-ms',
+      'type': 'executable',
+      'libraries': [ '<@(default_libraries)' ],
+      'dependencies': [
+        'libscal',
+        'sssp-base',
+        'glue.gyp:dds-partrr-ms',
+      ],
+    },
+    {
+      'target_name': 'sssp-dds-partrr-treiber',
+      'type': 'executable',
+      'libraries': [ '<@(default_libraries)' ],
+      'dependencies': [
+        'libscal',
+        'sssp-base',
+        'glue.gyp:dds-partrr-treiber',
+      ],
+    },
+    {
+      'target_name': 'sssp-kstack',
+      'type': 'executable',
+      'libraries': [ '<@(default_libraries)' ],
+      'dependencies': [
+        'libscal',
+        'sssp-base',
+        'glue.gyp:kstack',
+      ],
+    },
+    {
+      'target_name': 'sssp-ll-kstack',
+      'type': 'executable',
+      'libraries': [ '<@(default_libraries)' ],
+      'dependencies': [
+        'libscal',
+        'sssp-base',
+        'glue.gyp:ll-kstack',
+      ],
+    },
+    {
+      'target_name': 'sssp-dds-1random-ms',
+      'type': 'executable',
+      'libraries': [ '<@(default_libraries)' ],
+      'dependencies': [
+        'libscal',
+        'sssp-base',
+        'glue.gyp:dds-1random-ms',
+      ],
+    },
+    {
+      'target_name': 'sssp-dds-1random-treiber',
+      'type': 'executable',
+      'libraries': [ '<@(default_libraries)' ],
+      'dependencies': [
+        'libscal',
+        'sssp-base',
+        'glue.gyp:dds-1random-treiber',
+      ],
+    },
+    {
+      'target_name': 'sssp-fc',
+      'type': 'executable',
+      'libraries': [ '<@(default_libraries)' ],
+      'dependencies': [
+        'libscal',
+        'sssp-base',
+        'glue.gyp:fc',
+      ],
+    },
+    {
+      'target_name': 'sssp-rd',
+      'type': 'executable',
+      'libraries': [ '<@(default_libraries)' ],
+      'dependencies': [
+        'libscal',
+        'sssp-base',
+        'glue.gyp:rd',
+      ],
+    },
+    {
+      'target_name': 'sssp-sq',
+      'type': 'executable',
+      'libraries': [ '<@(default_libraries)' ],
+      'dependencies': [
+        'libscal',
+        'sssp-base',
+        'glue.gyp:sq',
+      ],
+    },
+    {
+      'target_name': 'sssp-bs-kfifo',
+      'type': 'executable',
+      'libraries': [ '<@(default_libraries)' ],
+      'dependencies': [
+        'libscal',
+        'sssp-base',
+        'glue.gyp:bs-kfifo',
+      ],
+    },
+    {
+      'target_name': 'sssp-us-kfifo',
+      'type': 'executable',
+      'libraries': [ '<@(default_libraries)' ],
+      'dependencies': [
+        'libscal',
+        'sssp-base',
+        'glue.gyp:us-kfifo',
+      ],
+    },
+    {
+      'target_name': 'sssp-ll-us-kfifo',
+      'type': 'executable',
+      'libraries': [ '<@(default_libraries)' ],
+      'dependencies': [
+        'libscal',
+        'sssp-base',
+        'glue.gyp:ll-us-kfifo',
+      ],
+    },
+    {
+      'target_name': 'sssp-ll-dds-ms',
+      'type': 'executable',
+      'libraries': [ '<@(default_libraries)' ],
+      'dependencies': [
+        'libscal',
+        'sssp-base',
+        'glue.gyp:ll-dds-ms',
+      ],
+    },
+    {
+      'target_name': 'sssp-ll-dds-treiber',
+      'type': 'executable',
+      'libraries': [ '<@(default_libraries)' ],
+      'dependencies': [
+        'libscal',
+        'sssp-base',
+        'glue.gyp:ll-dds-treiber',
+      ],
+    },
+    {
+      'target_name': 'sssp-hc-ts-cas-stack',
+      'type': 'executable',
+      'libraries': [ '<@(default_libraries)' ],
+      'dependencies': [
+        'libscal',
+        'sssp-base',
+        'glue.gyp:hc-ts-cas-stack',
+      ],
+    },
+    {
+      'target_name': 'sssp-hc-ts-stutter-stack',
+      'type': 'executable',
+      'libraries': [ '<@(default_libraries)' ],
+      'dependencies': [
+        'libscal',
+        'sssp-base',
+        'glue.gyp:hc-ts-stutter-stack',
+      ],
+    },
+    {
+      'target_name': 'sssp-hc-ts-interval-stack',
+      'type': 'executable',
+      'libraries': [ '<@(default_libraries)' ],
+      'dependencies': [
+        'libscal',
+        'sssp-base',
+        'glue.gyp:hc-ts-interval-stack',
+      ],
+    },
+    {
+      'target_name': 'sssp-hc-ts-atomic-stack',
+      'type': 'executable',
+      'libraries': [ '<@(default_libraries)' ],
+      'dependencies': [
+        'libscal',
+        'sssp-base',
+        'glue.gyp:hc-ts-atomic-stack',
+      ],
+    },
+    {
+      'target_name': 'sssp-hc-ts-hardware-stack',
+      'type': 'executable',
+      'libraries': [ '<@(default_libraries)' ],
+      'dependencies': [
+        'libscal',
+        'sssp-base',
+        'glue.gyp:hc-ts-hardware-stack',
+      ],
+    },
+    {
+      'target_name': 'sssp-hc-ts-cas-queue',
+      'type': 'executable',
+      'libraries': [ '<@(default_libraries)' ],
+      'dependencies': [
+        'libscal',
+        'sssp-base',
+        'glue.gyp:hc-ts-cas-queue',
+      ],
+    },
+    {
+      'target_name': 'sssp-hc-ts-stutter-queue',
+      'type': 'executable',
+      'libraries': [ '<@(default_libraries)' ],
+      'dependencies': [
+        'libscal',
+        'sssp-base',
+        'glue.gyp:hc-ts-stutter-queue',
+      ],
+    },
+    {
+      'target_name': 'sssp-hc-ts-interval-queue',
+      'type': 'executable',
+      'libraries': [ '<@(default_libraries)' ],
+      'dependencies': [
+        'libscal',
+        'sssp-base',
+        'glue.gyp:hc-ts-interval-queue',
+      ],
+    },
+    {
+      'target_name': 'sssp-hc-ts-atomic-queue',
+      'type': 'executable',
+      'libraries': [ '<@(default_libraries)' ],
+      'dependencies': [
+        'libscal',
+        'sssp-base',
+        'glue.gyp:hc-ts-atomic-queue',
+      ],
+    },
+    {
+      'target_name': 'sssp-hc-ts-hardware-queue',
+      'type': 'executable',
+      'libraries': [ '<@(default_libraries)' ],
+      'dependencies': [
+        'libscal',
+        'sssp-base',
+        'glue.gyp:hc-ts-hardware-queue',
+      ],
+    },
+    {
+      'target_name': 'sssp-ts-cas-deque',
+      'type': 'executable',
+      'libraries': [ '<@(default_libraries)' ],
+      'dependencies': [
+        'libscal',
+        'sssp-base',
+        'glue.gyp:ts-cas-deque',
+      ],
+    },
+    {
+      'target_name': 'sssp-ts-stutter-deque',
+      'type': 'executable',
+      'libraries': [ '<@(default_libraries)' ],
+      'dependencies': [
+        'libscal',
+        'sssp-base',
+        'glue.gyp:ts-stutter-deque',
+      ],
+    },
+    {
+      'target_name': 'sssp-ts-interval-deque',
+      'type': 'executable',
+      'libraries': [ '<@(default_libraries)' ],
+      'dependencies': [
+        'libscal',
+        'sssp-base',
+        'glue.gyp:ts-interval-deque',
+      ],
+    },
+    {
+      'target_name': 'sssp-ts-atomic-deque',
+      'type': 'executable',
+      'libraries': [ '<@(default_libraries)' ],
+      'dependencies': [
+        'libscal',
+        'sssp-base',
+        'glue.gyp:ts-atomic-deque',
+      ],
+    },
+    {
+      'target_name': 'sssp-ts-hardware-deque',
+      'type': 'executable',
+      'libraries': [ '<@(default_libraries)' ],
+      'dependencies': [
+        'libscal',
+        'sssp-base',
+        'glue.gyp:ts-hardware-deque',
+      ],
+    },
+    {
+      'target_name': 'sssp-rts-queue',
+      'type': 'executable',
+      'libraries': [ '<@(default_libraries)' ],
+      'dependencies': [
+        'libscal',
+        'sssp-base',
+        'glue.gyp:rts-queue',
+      ],
+    },
+    {
+      'target_name': 'sssp-cts-queue',
+      'type': 'executable',
+      'libraries': [ '<@(default_libraries)' ],
+      'dependencies': [
+        'libscal',
+        'sssp-base',
+        'glue.gyp:cts-queue',
+      ],
+    },
+    {
+      'target_name': 'sssp-eb-stack',
+      'type': 'executable',
+      'libraries': [ '<@(default_libraries)' ],
+      'dependencies': [
+        'libscal',
+        'sssp-base',
+        'glue.gyp:eb-stack',
+      ],
+    },
+    {
+      'target_name': 'sssp-lb-stack',
+      'type': 'executable',
+      'libraries': [ '<@(default_libraries)' ],
+      'dependencies': [
+        'libscal',
+        'sssp-base',
+        'glue.gyp:lb-stack',
+      ],
+    },
+    {
+      'target_name': 'sssp-lb-queue',
+      'type': 'executable',
+      'libraries': [ '<@(default_libraries)' ],
+      'dependencies': [
+        'libscal',
+        'sssp-base',
+        'glue.gyp:lb-queue',
+      ],
+    },
+    #{
+    #  'target_name': 'sssp-wf-queue',
+    #  'type': 'executable',
+    #  'libraries': [ '<@(default_libraries)' ],
+    #  'dependencies': [
+    #    'libscal',
+    #    'sssp-base',
+    #    'glue.gyp:wf-queue',
+    #  ],
+    #},
+    {
+      'target_name': 'sssp-lru-dds-ms',
+      'type': 'executable',
+      'libraries': [ '<@(default_libraries)' ],
+      'dependencies': [
+        'libscal',
+        'sssp-base',
+        'glue.gyp:lru-dds-ms',
+      ],
+    },
+    {
+      'target_name': 'sssp-lru-dds-treiber-stack',
+      'type': 'executable',
+      'libraries': [ '<@(default_libraries)' ],
+      'dependencies': [
+        'libscal',
+        'sssp-base',
+        'glue.gyp:lru-dds-treiber-stack',
+      ],
+    },
+    {
+      'target_name': 'sssp-ll-dyn-dds-ms',
+      'type': 'executable',
+      'libraries': [ '<@(default_libraries)' ],
+      'dependencies': [
+        'libscal',
+        'sssp-base',
+        'glue.gyp:ll-dyn-dds-ms',
+      ],
+    },
+    {
+      'target_name': 'sssp-ll-dyn-dds-treiber',
+      'type': 'executable',
+      'libraries': [ '<@(default_libraries)' ],
+      'dependencies': [
+        'libscal',
+        'sssp-base',
+        'glue.gyp:ll-dyn-dds-treiber',
+      ],
+    },
+    {
+      'target_name': 'sssp-lcrq',
+      'type': 'executable',
+      'libraries': [ '<@(default_libraries)' ],
+      'dependencies': [
+        'libscal',
+        'sssp-base',
+        'glue.gyp:lcrq',
+      ],
     }
   ]
 }

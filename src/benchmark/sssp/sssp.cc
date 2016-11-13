@@ -66,6 +66,7 @@ protected:
   void bench_func(void);
 };
 
+uint64_t g_num_threads;
 
 int main(int argc, const char **argv) {
   std::string usage("Single source shortest path (SSSP) benchmark.");
@@ -78,6 +79,7 @@ int main(int argc, const char **argv) {
 
   // Init the main program as executing thread (may use rnd generator or tl
   // allocs).
+  g_num_threads = FLAGS_threads;
   scal::tlalloc_init(tlsize, true /* touch pages */);
   scal::ThreadContext::prepare(num_threads + 1);
   scal::ThreadContext::assign_context();
@@ -139,7 +141,7 @@ inline void unpack (const uint64_t& v, uint32_t& a, uint32_t& b) {
 }
 
 void SsspBench::bench_func(void) {
-  uint64_t thread_id = scal::ThreadContext::get().thread_id();
+  // uint64_t thread_id = scal::ThreadContext::get().thread_id();
   
   Pool<uint64_t> *ds = static_cast<Pool<uint64_t>*>(data_);
   uint64_t element;
@@ -149,14 +151,19 @@ void SsspBench::bench_func(void) {
   graphint_t node_idx;
   graphint_t node_distance;
 
+#if 0
   uint64_t idle_threads_read;
   uint64_t fail_cnt = 0;
   uint64_t nodes_processed = 0;
+#endif
+
+  uint64_t fail = 0;
 
   graph->nodes[src].distance = 0;
   ds->put(pack(0, src));
 
   while (1) {
+#if 0
     if (!ds->get(&element)) {
       // Keep threads alive until there is really no work left (i.e., every
       // thread failed to extract a node).
@@ -169,8 +176,19 @@ void SsspBench::bench_func(void) {
       if (idle_threads_read == num_threads()) break;
       idle_threads--;
     }
+#endif
+    
+    if (!ds->get(&element)) { // list is empty; TODO make sure threads don't quit early
+      fail++;
+      if (fail > 20 * num_threads()) { // TODO: really need a better break condition...
+        break;
+      }
+      continue;
+    }
+    
+    fail = 0;
 
-    nodes_processed++;
+    // nodes_processed++;
     unpack(element, node_distance, node_idx);
 
     Node& node = graph->nodes[node_idx];
@@ -203,8 +221,8 @@ void SsspBench::bench_func(void) {
     }
   }
 
-  std::cout << "thread " << thread_id << ": "
-            << fail_cnt << " fail / "
-            << nodes_processed << " processed"
-            << std::endl;
+  // std::cout << "thread " << thread_id << ": "
+  //           << fail_cnt << " fail / "
+  //           << nodes_processed << " processed"
+  //           << std::endl;
 }
