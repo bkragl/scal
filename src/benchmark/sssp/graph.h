@@ -36,6 +36,7 @@ public:
   static Graph* from_simple (const char* graph_file);
 
   void print_distances (const char* weights_file);
+  void print_distances_corrected (const char* weights_file, const graphint_t cor);
   
   graphint_t num_nodes;
   Node *nodes;

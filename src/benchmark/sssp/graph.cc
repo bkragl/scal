@@ -134,10 +134,19 @@ Graph* Graph::from_simple (const char* graph_file) {
 }
 
 void Graph::print_distances (const char* distance_file) {
+  print_distances_corrected(distance_file, 0);
+}
+
+void Graph::print_distances_corrected (const char* distance_file, const graphint_t cor) {
   std::ofstream f;
   f.open (distance_file);
   for (graphint_t i = 0; i < num_nodes; ++i) {
-    f << nodes[i].distance << std::endl;
+    if (nodes[i].distance == Node::no_distance) {
+      f << "∞";
+    } else {
+      f << nodes[i].distance - cor;
+    }
+    f << std::endl;
   }
   f.close();
 }

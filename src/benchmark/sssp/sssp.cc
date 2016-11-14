@@ -116,7 +116,7 @@ int main(int argc, const char **argv) {
 
   if (!FLAGS_distance_file.empty()) {
     std::cout << "writing distances ..." << std::endl;
-    graph->print_distances(FLAGS_distance_file.c_str());
+    graph->print_distances_corrected(FLAGS_distance_file.c_str(), 1);
   }
   
   return EXIT_SUCCESS;
@@ -161,6 +161,8 @@ void SsspBench::bench_func(void) {
 
   uint64_t fail = 0;
 
+  // Some data structures do not allow to insert a 0 (null) value, thus we start
+  // with 1 and correct later.
   graph->nodes[src].distance = 1;
   ds->put(pack(1, src));
 
