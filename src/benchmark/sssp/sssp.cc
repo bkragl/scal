@@ -18,6 +18,7 @@
 #include "benchmark/common.h"
 #include "benchmark/std_glue/std_pipe_api.h"
 #include "datastructures/pool.h"
+#include "util/allocation.h"
 #include "util/malloc.h"
 #include "util/operation_logger.h"
 #include "util/random.h"
@@ -35,8 +36,6 @@ DEFINE_bool  (print_summary, true,
               "print execution summary");
 DEFINE_bool  (log_operations, false,
               "log invocation/response/linearization of all operations");
-DEFINE_bool  (allow_empty_returns, false,
-              "does not stop the execution at an empty-dequeue");
 DEFINE_string(graph_format, "dimacs",
               "input graph format");
 DEFINE_string(graph_file, "",
@@ -132,12 +131,15 @@ void SsspBench::print_summary (std::ostream& out) {
 }
 
 inline uint64_t pack (uint32_t a, uint32_t b) {
-  return ((uint64_t)a) << 32 | b;
+  uint64_t* p = scal::tlget<uint64_t, 0>();
+  *p = ((uint64_t)a) << 32 | b;
+  return reinterpret_cast<uint64_t>(p);
 }
 
 inline void unpack (const uint64_t& v, uint32_t& a, uint32_t& b) {
-  a = (uint32_t)((v & 0xFFFFFFFF00000000LL) >> 32);
-  b = (uint32_t)(v & 0xFFFFFFFFLL);
+  uint64_t* p = reinterpret_cast<uint64_t*>(v);
+  a = (uint32_t)((*p & 0xFFFFFFFF00000000LL) >> 32);
+  b = (uint32_t)(*p & 0xFFFFFFFFLL);
 }
 
 void SsspBench::bench_func(void) {
@@ -159,8 +161,8 @@ void SsspBench::bench_func(void) {
 
   uint64_t fail = 0;
 
-  graph->nodes[src].distance = 0;
-  ds->put(pack(0, src));
+  graph->nodes[src].distance = 1;
+  ds->put(pack(1, src));
 
   while (1) {
 #if 0
@@ -177,7 +179,8 @@ void SsspBench::bench_func(void) {
       idle_threads--;
     }
 #endif
-    
+
+    // "Keep alive" code from SprayList
     if (!ds->get(&element)) { // list is empty; TODO make sure threads don't quit early
       fail++;
       if (fail > 20 * num_threads()) { // TODO: really need a better break condition...
@@ -185,7 +188,6 @@ void SsspBench::bench_func(void) {
       }
       continue;
     }
-    
     fail = 0;
 
     // nodes_processed++;
