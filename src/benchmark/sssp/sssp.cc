@@ -67,6 +67,30 @@ protected:
 
 uint64_t g_num_threads;
 
+#ifdef SSSP_PREALLOC
+uint64_t queue_prealloc_size;
+inline uint64_t pack (uint32_t a, uint32_t b) {
+  return ((uint64_t)a) << 32 | (uint64_t)b;
+}
+
+inline void unpack (const uint64_t& v, uint32_t& a, uint32_t& b) {
+  a = (uint32_t)((v & 0xFFFFFFFF00000000LL) >> 32);
+  b = (uint32_t)(v & 0xFFFFFFFFLL);
+}
+#else
+inline uint64_t pack (uint32_t a, uint32_t b) {
+  uint64_t* p = scal::tlget<uint64_t, 0>();
+  *p = ((uint64_t)a) << 32 | b;
+  return reinterpret_cast<uint64_t>(p);
+}
+
+inline void unpack (const uint64_t& v, uint32_t& a, uint32_t& b) {
+  uint64_t* p = reinterpret_cast<uint64_t*>(v);
+  a = (uint32_t)((*p & 0xFFFFFFFF00000000LL) >> 32);
+  b = (uint32_t)(*p & 0xFFFFFFFFLL);
+}
+#endif
+
 int main(int argc, const char **argv) {
   std::string usage("Single source shortest path (SSSP) benchmark.");
   google::SetUsageMessage(usage);
@@ -96,6 +120,9 @@ int main(int argc, const char **argv) {
   }
   std::cout << "done" << std::endl;
 
+#ifdef SSSP_PREALLOC
+  queue_prealloc_size = graph->num_nodes;
+#endif
   void *ds = ds_new();
 
   SsspBench benchmark(
@@ -128,18 +155,6 @@ void SsspBench::print_summary (std::ostream& out) {
       << num_threads()    << "\t"
       << execution_time() << "\t"
       << std::endl;
-}
-
-inline uint64_t pack (uint32_t a, uint32_t b) {
-  uint64_t* p = scal::tlget<uint64_t, 0>();
-  *p = ((uint64_t)a) << 32 | b;
-  return reinterpret_cast<uint64_t>(p);
-}
-
-inline void unpack (const uint64_t& v, uint32_t& a, uint32_t& b) {
-  uint64_t* p = reinterpret_cast<uint64_t*>(v);
-  a = (uint32_t)((*p & 0xFFFFFFFF00000000LL) >> 32);
-  b = (uint32_t)(*p & 0xFFFFFFFFLL);
 }
 
 void SsspBench::bench_func(void) {

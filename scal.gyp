@@ -96,6 +96,26 @@
         'src/benchmark/sssp/sssp.cc',
       ],
     },
+    {
+      'target_name': 'sssp-base-prealloc',
+      'type': 'static_library',
+      'defines': [ 'SSSP_PREALLOC' ],
+      'sources': [
+        'src/benchmark/common.cc',
+        'src/benchmark/sssp/graph.cc',
+        'src/benchmark/sssp/sssp.cc',
+      ],
+    },
+    {
+      'target_name': 'sssp-sequential',
+      'type': 'executable',
+      'libraries': [ '<@(default_libraries)' ],
+      'sources': [
+        'src/benchmark/sssp/sequential.cc',
+        'src/benchmark/sssp/graph.cc',
+        'src/datastructures/min_heap.cc',
+      ],
+    },
     
     ### Producer-Consumer (prodcon) ###
     {
@@ -1400,6 +1420,16 @@
         'libscal',
         'sssp-base',
         'glue.gyp:lcrq',
+      ],
+    },
+    {
+      'target_name': 'sssp-lb-priority-queue',
+      'type': 'executable',
+      'libraries': [ '<@(default_libraries)' ],
+      'dependencies': [
+        'libscal',
+        'sssp-base-prealloc',
+        'glue.gyp:lb-priority-queue',
       ],
     }
   ]

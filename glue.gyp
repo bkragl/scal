@@ -371,6 +371,15 @@
       'sources': [
         'src/benchmark/std_glue/glue_lru_dds_treiber_stack.cc'
       ],
+    },
+    {
+      'target_name': 'lb-priority-queue',
+      'type': 'static_library',
+      'cflags': [ ],
+      'sources': [
+        'src/datastructures/min_heap.cc',
+        'src/benchmark/std_glue/glue_lb_priority_queue.cc'
+      ],
     }
   ]
 }
