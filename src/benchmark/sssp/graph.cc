@@ -60,7 +60,9 @@ Graph* Graph::from_dimacs (const char* graph_file) {
     graphint_t num_neighbors = g->nodes[i].num_neighbors;
     if (num_neighbors > 0) {
       g->nodes[i].neighbors = new graphint_t[num_neighbors];
+#ifndef BFS
       g->nodes[i].weights   = new graphint_t[num_neighbors];
+#endif
     }
   }
 
@@ -76,7 +78,9 @@ Graph* Graph::from_dimacs (const char* graph_file) {
       if (c == 'a') {
         iss >> u >> v >> w;
         g->nodes[u-1].neighbors[idx[u-1]] = v-1;
+#ifndef BFS
         g->nodes[u-1].weights  [idx[u-1]] = w;
+#endif
         idx[u-1]++;
       }
     }
@@ -112,7 +116,9 @@ Graph* Graph::from_simple (const char* graph_file) {
     graphint_t num_neighbors = g->nodes[i].num_neighbors;
     if (num_neighbors > 0) {
       g->nodes[i].neighbors = new graphint_t[num_neighbors];
+#ifndef BFS
       g->nodes[i].weights   = new graphint_t[num_neighbors];
+#endif
     }
   }
 
@@ -125,7 +131,9 @@ Graph* Graph::from_simple (const char* graph_file) {
     for (graphint_t i = 0; i < num_edges; ++i) {
       infile >> u >> v >> w;
       g->nodes[u-1].neighbors[idx[u-1]] = v-1;
+#ifndef BFS
       g->nodes[u-1].weights  [idx[u-1]] = w;
+#endif
       idx[u-1]++;
     }
   }

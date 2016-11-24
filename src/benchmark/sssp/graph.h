@@ -17,13 +17,18 @@ public:
 
   graphint_t num_neighbors;
   graphint_t *neighbors;
+#ifndef BFS
   graphint_t *weights;
+#endif
 
   graphint_t distance;
   //graphint_t parent;
   graphint_t times_processed;
 
-  Node () : num_neighbors(0), neighbors(0), weights(0),
+  Node () : num_neighbors(0), neighbors(0),
+#ifndef BFS
+            weights(0),
+#endif
             distance(no_distance), times_processed(0) {}
 };
 
@@ -35,8 +40,8 @@ public:
   static Graph* from_dimacs (const char* graph_file);
   static Graph* from_simple (const char* graph_file);
 
-  void print_distances (const char* weights_file);
-  void print_distances_corrected (const char* weights_file, const graphint_t cor);
+  void print_distances (const char* distance_file);
+  void print_distances_corrected (const char* distance_file, const graphint_t cor);
   
   graphint_t num_nodes;
   Node *nodes;

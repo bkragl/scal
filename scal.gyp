@@ -107,6 +107,16 @@
       ],
     },
     {
+      'target_name': 'bfs-base',
+      'type': 'static_library',
+      'defines': [ 'BFS' ],
+      'sources': [
+        'src/benchmark/common.cc',
+        'src/benchmark/sssp/graph.cc',
+        'src/benchmark/sssp/sssp.cc',
+      ],
+    },
+    {
       'target_name': 'sssp-sequential',
       'type': 'executable',
       'libraries': [ '<@(default_libraries)' ],
@@ -1431,6 +1441,438 @@
         'sssp-base-prealloc',
         'glue.gyp:lb-priority-queue',
       ],
-    }
+    },
+
+    ### Breadth-first search (bfs) ###
+    {
+      'target_name': 'bfs-ms',
+      'type': 'executable',
+      'libraries': [ '<@(default_libraries)' ],
+      'dependencies': [
+        'libscal',
+        'bfs-base',
+        'glue.gyp:ms',
+      ],
+    },
+    {
+      'target_name': 'bfs-treiber',
+      'type': 'executable',
+      'libraries': [ '<@(default_libraries)' ],
+      'dependencies': [
+        'libscal',
+        'bfs-base',
+        'glue.gyp:treiber',
+      ],
+    },
+    {
+      'target_name': 'bfs-dds-partrr-ms',
+      'type': 'executable',
+      'libraries': [ '<@(default_libraries)' ],
+      'dependencies': [
+        'libscal',
+        'bfs-base',
+        'glue.gyp:dds-partrr-ms',
+      ],
+    },
+    {
+      'target_name': 'bfs-dds-partrr-treiber',
+      'type': 'executable',
+      'libraries': [ '<@(default_libraries)' ],
+      'dependencies': [
+        'libscal',
+        'bfs-base',
+        'glue.gyp:dds-partrr-treiber',
+      ],
+    },
+    {
+      'target_name': 'bfs-kstack',
+      'type': 'executable',
+      'libraries': [ '<@(default_libraries)' ],
+      'dependencies': [
+        'libscal',
+        'bfs-base',
+        'glue.gyp:kstack',
+      ],
+    },
+    {
+      'target_name': 'bfs-ll-kstack',
+      'type': 'executable',
+      'libraries': [ '<@(default_libraries)' ],
+      'dependencies': [
+        'libscal',
+        'bfs-base',
+        'glue.gyp:ll-kstack',
+      ],
+    },
+    {
+      'target_name': 'bfs-dds-1random-ms',
+      'type': 'executable',
+      'libraries': [ '<@(default_libraries)' ],
+      'dependencies': [
+        'libscal',
+        'bfs-base',
+        'glue.gyp:dds-1random-ms',
+      ],
+    },
+    {
+      'target_name': 'bfs-dds-1random-treiber',
+      'type': 'executable',
+      'libraries': [ '<@(default_libraries)' ],
+      'dependencies': [
+        'libscal',
+        'bfs-base',
+        'glue.gyp:dds-1random-treiber',
+      ],
+    },
+    {
+      'target_name': 'bfs-fc',
+      'type': 'executable',
+      'libraries': [ '<@(default_libraries)' ],
+      'dependencies': [
+        'libscal',
+        'bfs-base',
+        'glue.gyp:fc',
+      ],
+    },
+    {
+      'target_name': 'bfs-rd',
+      'type': 'executable',
+      'libraries': [ '<@(default_libraries)' ],
+      'dependencies': [
+        'libscal',
+        'bfs-base',
+        'glue.gyp:rd',
+      ],
+    },
+    {
+      'target_name': 'bfs-sq',
+      'type': 'executable',
+      'libraries': [ '<@(default_libraries)' ],
+      'dependencies': [
+        'libscal',
+        'bfs-base',
+        'glue.gyp:sq',
+      ],
+    },
+    {
+      'target_name': 'bfs-bs-kfifo',
+      'type': 'executable',
+      'libraries': [ '<@(default_libraries)' ],
+      'dependencies': [
+        'libscal',
+        'bfs-base',
+        'glue.gyp:bs-kfifo',
+      ],
+    },
+    {
+      'target_name': 'bfs-us-kfifo',
+      'type': 'executable',
+      'libraries': [ '<@(default_libraries)' ],
+      'dependencies': [
+        'libscal',
+        'bfs-base',
+        'glue.gyp:us-kfifo',
+      ],
+    },
+    {
+      'target_name': 'bfs-ll-us-kfifo',
+      'type': 'executable',
+      'libraries': [ '<@(default_libraries)' ],
+      'dependencies': [
+        'libscal',
+        'bfs-base',
+        'glue.gyp:ll-us-kfifo',
+      ],
+    },
+    {
+      'target_name': 'bfs-ll-dds-ms',
+      'type': 'executable',
+      'libraries': [ '<@(default_libraries)' ],
+      'dependencies': [
+        'libscal',
+        'bfs-base',
+        'glue.gyp:ll-dds-ms',
+      ],
+    },
+    {
+      'target_name': 'bfs-ll-dds-treiber',
+      'type': 'executable',
+      'libraries': [ '<@(default_libraries)' ],
+      'dependencies': [
+        'libscal',
+        'bfs-base',
+        'glue.gyp:ll-dds-treiber',
+      ],
+    },
+    {
+      'target_name': 'bfs-hc-ts-cas-stack',
+      'type': 'executable',
+      'libraries': [ '<@(default_libraries)' ],
+      'dependencies': [
+        'libscal',
+        'bfs-base',
+        'glue.gyp:hc-ts-cas-stack',
+      ],
+    },
+    {
+      'target_name': 'bfs-hc-ts-stutter-stack',
+      'type': 'executable',
+      'libraries': [ '<@(default_libraries)' ],
+      'dependencies': [
+        'libscal',
+        'bfs-base',
+        'glue.gyp:hc-ts-stutter-stack',
+      ],
+    },
+    {
+      'target_name': 'bfs-hc-ts-interval-stack',
+      'type': 'executable',
+      'libraries': [ '<@(default_libraries)' ],
+      'dependencies': [
+        'libscal',
+        'bfs-base',
+        'glue.gyp:hc-ts-interval-stack',
+      ],
+    },
+    {
+      'target_name': 'bfs-hc-ts-atomic-stack',
+      'type': 'executable',
+      'libraries': [ '<@(default_libraries)' ],
+      'dependencies': [
+        'libscal',
+        'bfs-base',
+        'glue.gyp:hc-ts-atomic-stack',
+      ],
+    },
+    {
+      'target_name': 'bfs-hc-ts-hardware-stack',
+      'type': 'executable',
+      'libraries': [ '<@(default_libraries)' ],
+      'dependencies': [
+        'libscal',
+        'bfs-base',
+        'glue.gyp:hc-ts-hardware-stack',
+      ],
+    },
+    {
+      'target_name': 'bfs-hc-ts-cas-queue',
+      'type': 'executable',
+      'libraries': [ '<@(default_libraries)' ],
+      'dependencies': [
+        'libscal',
+        'bfs-base',
+        'glue.gyp:hc-ts-cas-queue',
+      ],
+    },
+    {
+      'target_name': 'bfs-hc-ts-stutter-queue',
+      'type': 'executable',
+      'libraries': [ '<@(default_libraries)' ],
+      'dependencies': [
+        'libscal',
+        'bfs-base',
+        'glue.gyp:hc-ts-stutter-queue',
+      ],
+    },
+    {
+      'target_name': 'bfs-hc-ts-interval-queue',
+      'type': 'executable',
+      'libraries': [ '<@(default_libraries)' ],
+      'dependencies': [
+        'libscal',
+        'bfs-base',
+        'glue.gyp:hc-ts-interval-queue',
+      ],
+    },
+    {
+      'target_name': 'bfs-hc-ts-atomic-queue',
+      'type': 'executable',
+      'libraries': [ '<@(default_libraries)' ],
+      'dependencies': [
+        'libscal',
+        'bfs-base',
+        'glue.gyp:hc-ts-atomic-queue',
+      ],
+    },
+    {
+      'target_name': 'bfs-hc-ts-hardware-queue',
+      'type': 'executable',
+      'libraries': [ '<@(default_libraries)' ],
+      'dependencies': [
+        'libscal',
+        'bfs-base',
+        'glue.gyp:hc-ts-hardware-queue',
+      ],
+    },
+    {
+      'target_name': 'bfs-ts-cas-deque',
+      'type': 'executable',
+      'libraries': [ '<@(default_libraries)' ],
+      'dependencies': [
+        'libscal',
+        'bfs-base',
+        'glue.gyp:ts-cas-deque',
+      ],
+    },
+    {
+      'target_name': 'bfs-ts-stutter-deque',
+      'type': 'executable',
+      'libraries': [ '<@(default_libraries)' ],
+      'dependencies': [
+        'libscal',
+        'bfs-base',
+        'glue.gyp:ts-stutter-deque',
+      ],
+    },
+    {
+      'target_name': 'bfs-ts-interval-deque',
+      'type': 'executable',
+      'libraries': [ '<@(default_libraries)' ],
+      'dependencies': [
+        'libscal',
+        'bfs-base',
+        'glue.gyp:ts-interval-deque',
+      ],
+    },
+    {
+      'target_name': 'bfs-ts-atomic-deque',
+      'type': 'executable',
+      'libraries': [ '<@(default_libraries)' ],
+      'dependencies': [
+        'libscal',
+        'bfs-base',
+        'glue.gyp:ts-atomic-deque',
+      ],
+    },
+    {
+      'target_name': 'bfs-ts-hardware-deque',
+      'type': 'executable',
+      'libraries': [ '<@(default_libraries)' ],
+      'dependencies': [
+        'libscal',
+        'bfs-base',
+        'glue.gyp:ts-hardware-deque',
+      ],
+    },
+    {
+      'target_name': 'bfs-rts-queue',
+      'type': 'executable',
+      'libraries': [ '<@(default_libraries)' ],
+      'dependencies': [
+        'libscal',
+        'bfs-base',
+        'glue.gyp:rts-queue',
+      ],
+    },
+    {
+      'target_name': 'bfs-cts-queue',
+      'type': 'executable',
+      'libraries': [ '<@(default_libraries)' ],
+      'dependencies': [
+        'libscal',
+        'bfs-base',
+        'glue.gyp:cts-queue',
+      ],
+    },
+    {
+      'target_name': 'bfs-eb-stack',
+      'type': 'executable',
+      'libraries': [ '<@(default_libraries)' ],
+      'dependencies': [
+        'libscal',
+        'bfs-base',
+        'glue.gyp:eb-stack',
+      ],
+    },
+    {
+      'target_name': 'bfs-lb-stack',
+      'type': 'executable',
+      'libraries': [ '<@(default_libraries)' ],
+      'dependencies': [
+        'libscal',
+        'bfs-base',
+        'glue.gyp:lb-stack',
+      ],
+    },
+    {
+      'target_name': 'bfs-lb-queue',
+      'type': 'executable',
+      'libraries': [ '<@(default_libraries)' ],
+      'dependencies': [
+        'libscal',
+        'bfs-base',
+        'glue.gyp:lb-queue',
+      ],
+    },
+    #{
+    #  'target_name': 'bfs-wf-queue',
+    #  'type': 'executable',
+    #  'libraries': [ '<@(default_libraries)' ],
+    #  'dependencies': [
+    #    'libscal',
+    #    'bfs-base',
+    #    'glue.gyp:wf-queue',
+    #  ],
+    #},
+    {
+      'target_name': 'bfs-lru-dds-ms',
+      'type': 'executable',
+      'libraries': [ '<@(default_libraries)' ],
+      'dependencies': [
+        'libscal',
+        'bfs-base',
+        'glue.gyp:lru-dds-ms',
+      ],
+    },
+    {
+      'target_name': 'bfs-lru-dds-treiber-stack',
+      'type': 'executable',
+      'libraries': [ '<@(default_libraries)' ],
+      'dependencies': [
+        'libscal',
+        'bfs-base',
+        'glue.gyp:lru-dds-treiber-stack',
+      ],
+    },
+    {
+      'target_name': 'bfs-ll-dyn-dds-ms',
+      'type': 'executable',
+      'libraries': [ '<@(default_libraries)' ],
+      'dependencies': [
+        'libscal',
+        'bfs-base',
+        'glue.gyp:ll-dyn-dds-ms',
+      ],
+    },
+    {
+      'target_name': 'bfs-ll-dyn-dds-treiber',
+      'type': 'executable',
+      'libraries': [ '<@(default_libraries)' ],
+      'dependencies': [
+        'libscal',
+        'bfs-base',
+        'glue.gyp:ll-dyn-dds-treiber',
+      ],
+    },
+    {
+      'target_name': 'bfs-lcrq',
+      'type': 'executable',
+      'libraries': [ '<@(default_libraries)' ],
+      'dependencies': [
+        'libscal',
+        'bfs-base',
+        'glue.gyp:lcrq',
+      ],
+    },
+    # {
+    #   'target_name': 'bfs-lb-priority-queue',
+    #   'type': 'executable',
+    #   'libraries': [ '<@(default_libraries)' ],
+    #   'dependencies': [
+    #     'libscal',
+    #     'bfs-base-prealloc',
+    #     'glue.gyp:lb-priority-queue',
+    #   ],
+    # }
   ]
 }

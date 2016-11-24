@@ -36,7 +36,7 @@ DEFINE_bool  (print_summary, true,
               "print execution summary");
 DEFINE_bool  (log_operations, false,
               "log invocation/response/linearization of all operations");
-DEFINE_string(graph_format, "dimacs",
+DEFINE_string(graph_format, "simple",
               "input graph format");
 DEFINE_string(graph_file, "",
               "input graph file");
@@ -216,11 +216,15 @@ void SsspBench::bench_func(void) {
 
     for (graphint_t i = 0; i < node.num_neighbors; i++) {
       graphint_t neighbor_idx = node.neighbors[i];
-      graphint_t weight       = node.weights[i];
-
       Node& neighbor = graph->nodes[neighbor_idx];
       graphint_t neighbor_distance = neighbor.distance;
+
+#ifdef BFS
+      graphint_t new_neighbor_distance = node_distance + 1;
+#else
+      graphint_t weight = node.weights[i];
       graphint_t new_neighbor_distance = node_distance + weight;
+#endif
 
       while (new_neighbor_distance < neighbor_distance) {
         // Found better path to neighbor.
