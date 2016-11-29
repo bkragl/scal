@@ -126,6 +126,16 @@
         'src/datastructures/min_heap.cc',
       ],
     },
+    {
+      'target_name': 'bfs-sequential',
+      'type': 'executable',
+      'libraries': [ '<@(default_libraries)' ],
+      'defines': [ 'BFS' ],
+      'sources': [
+        'src/benchmark/sssp/sequential.cc',
+        'src/benchmark/sssp/graph.cc',
+      ],
+    },
     
     ### Producer-Consumer (prodcon) ###
     {

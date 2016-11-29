@@ -10,12 +10,17 @@
 
 #include "util/scal-time.h"
 
+#ifndef BFS
 #include "datastructures/min_heap.h"
+#else
+#include <deque>
+#endif
+
 #include "benchmark/sssp/graph.h"
 
 DEFINE_bool  (print_summary, true,
               "print execution summary");
-DEFINE_string(graph_format, "dimacs",
+DEFINE_string(graph_format, "simple",
               "input graph format");
 DEFINE_string(graph_file, "",
               "input graph file");
@@ -48,6 +53,7 @@ inline void unpack (const uint64_t& v, uint32_t& a, uint32_t& b) {
   b = (uint32_t)(v & 0xFFFFFFFFLL);
 }
 
+#ifndef BFS
 void dijkstra(Graph* graph) {
   min_heap queue(graph->num_nodes);
 
@@ -64,13 +70,10 @@ void dijkstra(Graph* graph) {
   start_time = get_utime();
   
   while (!queue.empty()) {
-    // queue.Print();
     element = queue.get_min();
     queue.delete_min();
 
     unpack(element, node_distance, node_idx);
-
-    // std::cout << "processing " << node_idx << "/" << node_distance << std::endl;
 
     Node& node = graph->nodes[node_idx];
     if (node_distance != node.distance) continue; // dead node
@@ -78,39 +81,57 @@ void dijkstra(Graph* graph) {
     
     for (graphint_t i = 0; i < node.num_neighbors; i++) {
       graphint_t neighbor_idx = node.neighbors[i];
-      graphint_t weight       = node.weights[i];
-      
       Node& neighbor = graph->nodes[neighbor_idx];
       graphint_t neighbor_distance = neighbor.distance;
+
+      graphint_t weight       = node.weights[i];
       graphint_t new_neighbor_distance = node_distance + weight;
       
-      // std::cout << "  neighbor " << neighbor_idx << "/" << neighbor_distance << std::endl;
-
       if (new_neighbor_distance < neighbor_distance) {
         // Found better path to neighbor.
         neighbor.distance = new_neighbor_distance;
         queue.insert(pack(new_neighbor_distance, neighbor_idx));
-        // std::cout << "    new dist " << new_neighbor_distance << std::endl;
       }
-
-      // queue.Print();
-    }
-    
-    // std::cout << std::endl;
-  }
-
-  for (uint64_t i = 0; i < graph->num_nodes; ++i) {
-    if (graph->nodes[i].times_processed != 1) {
-      std::cout << "node processed too many times ("
-                << graph->nodes[i].times_processed
-                << ")" << std::endl;
-      break;
     }
   }
 
   end_time = get_utime();
 }
+#else
+void bfs(Graph* graph) {
+  std::deque<graphint_t> queue;
 
+  graphint_t src = 0;
+
+  graphint_t node_idx;
+
+  graph->nodes[src].distance = 0;
+  queue.push_front(pack(0, src));
+
+  start_time = get_utime();
+  
+  while (!queue.empty()) {
+    node_idx = queue.back();
+    queue.pop_back();
+
+    Node& node = graph->nodes[node_idx];
+    node.times_processed++;
+    
+    for (graphint_t i = 0; i < node.num_neighbors; i++) {
+      graphint_t neighbor_idx = node.neighbors[i];
+      Node& neighbor = graph->nodes[neighbor_idx];
+      graphint_t neighbor_distance = neighbor.distance;
+
+      if (neighbor_distance == Node::no_distance) {
+        neighbor.distance = node.distance + 1;
+        queue.push_front(neighbor_idx);
+      }
+    }
+  }
+
+  end_time = get_utime();
+}
+#endif
 
 int main(int argc, const char **argv) {
   std::string usage("Single source shortest path (SSSP) benchmark.");
@@ -120,6 +141,7 @@ int main(int argc, const char **argv) {
   Graph* graph;
 
   std::cout << "reading graph ..." << std::endl;
+  start_time = get_utime();
   if (FLAGS_graph_format == "dimacs") {
     graph = Graph::from_dimacs(FLAGS_graph_file.c_str());
   } else if (FLAGS_graph_format == "simple") {
@@ -128,9 +150,14 @@ int main(int argc, const char **argv) {
     std::cerr << "Unknown graph format" << std::endl;
     abort();
   }
-  std::cout << "done" << std::endl;
+  end_time = get_utime();
+  std::cout << "done (" << execution_time() << ")" << std::endl;
 
+#ifndef BFS
   dijkstra(graph);
+#else
+  bfs(graph);
+#endif
 
   if (FLAGS_print_summary) {
     print_summary(std::cout);
